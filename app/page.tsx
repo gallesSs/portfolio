@@ -1,66 +1,44 @@
-import Image from "next/image";
+import Link from "next/link";
 import styles from "./page.module.css";
+
+/*  Развилка на входе. Коридор — не гейт: спешащему видно, куда свернуть,
+    и формулировка снимает чувство, что он что-то упускает.  */
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className={styles.wrap}>
+      <div className={styles.lede}>
+        <p className={styles.kicker}>Портфолио</p>
+        <h1 className={styles.h1}>Как вы хотите это смотреть?</h1>
+        <p className={styles.sub}>
+          Одно и то же содержимое, два способа. Оба ведут к одним и тем же проектам — просто один занимает три минуты,
+          а другой тридцать секунд.
+        </p>
+      </div>
+
+      <div className={styles.paths}>
+        <Link href="/corridor" className={`${styles.path} ${styles.hero}`}>
+          <span className={styles.icon} aria-hidden>
+            🚪
+          </span>
+          <h2 className={styles.h2}>Пройтись по коридору</h2>
+          <p className={styles.p}>
+            Идёте от первого лица, заглядываете в двери. За каждой — проект и разговор со мной о том, как он делался.
           </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          <span className={styles.tag}>Интерактив · ~3 мин</span>
+        </Link>
+
+        <Link href="/plain" className={styles.path}>
+          <span className={styles.icon} aria-hidden>
+            ▤
+          </span>
+          <h2 className={styles.h2}>Обычное портфолио</h2>
+          <p className={styles.p}>
+            Список проектов, стек, контакты. Без анимаций и без ходьбы. Если вы спешите — вам сюда.
+          </p>
+          <span className={styles.tag}>Текст · ~30 сек</span>
+        </Link>
+      </div>
+    </main>
   );
 }

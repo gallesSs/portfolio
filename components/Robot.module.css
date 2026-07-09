@@ -1,0 +1,85 @@
+.robot {
+  width: 86px;
+  height: 95px;
+  flex: none;
+  overflow: visible;
+}
+
+.head {
+  fill: #232a35;
+  stroke: #39424f;
+  stroke-width: 1.5;
+}
+
+.visor {
+  fill: #0d1015;
+  stroke: #39424f;
+  stroke-width: 1;
+}
+
+.socket {
+  fill: #05070a;
+}
+
+.pupil {
+  fill: var(--steel);
+  transition: fill 0.3s;
+}
+
+.glint {
+  fill: #fff;
+  opacity: 0.75;
+}
+
+.mouth {
+  fill: var(--steel);
+  opacity: 0.55;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: fill 0.3s, opacity 0.3s;
+}
+
+.neck {
+  fill: #1b212a;
+}
+
+.body {
+  fill: none;
+  stroke: #39424f;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.wire {
+  stroke: #39424f;
+  stroke-width: 2;
+}
+
+.bulb {
+  fill: #39424f;
+  transition: fill 0.3s;
+}
+
+/* Говорит — теплеет: глаза, рот и лампочка загораются янтарём. */
+.live .pupil,
+.live .mouth {
+  fill: var(--amber);
+  opacity: 1;
+}
+
+.live .bulb {
+  fill: var(--amber);
+  animation: blip 0.9s ease-in-out infinite;
+}
+
+@keyframes blip {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live .bulb {
+    animation: none;
+  }
+}

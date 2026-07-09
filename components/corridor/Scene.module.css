@@ -1,0 +1,20 @@
+.canvas {
+  position: fixed;
+  inset: 0;
+  touch-action: none;
+}
+
+/* Табличка живёт в 3D через drei <Html>, но остаётся обычным DOM —
+   значит читается скринридером и не требует шрифтовых атласов. */
+.plate {
+  padding: 4px 12px;
+  white-space: nowrap;
+  font: 600 13px/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: #0b0d11cc;
+  border: 1px solid var(--line-lit);
+  user-select: none;
+  pointer-events: none;
+}

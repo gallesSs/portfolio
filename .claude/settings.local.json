@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(artifact-design)",
+      "Skill(artifact-design:*)",
+      "PowerShell(\"node: \" + \\(node -v\\); \"npm:  \" + \\(npm -v\\); \"pnpm: \" + \\(try { pnpm -v } catch { \"нет\" }\\); \"git:  \" + \\(git --version\\))"
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.dot,
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: -3px 0 0 -3px;
+  will-change: transform;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+}
+
+.ring {
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  border: 1px solid var(--steel);
+  border-radius: 50%;
+  opacity: 0.45;
+  transform-origin: center;
+  translate: -50% -50%;
+  transition: width 0.18s, height 0.18s, border-radius 0.18s, opacity 0.18s;
+}
+
+/* Кольцо центрируется через translate, точка — через отрицательный margin:
+   так у каждого свой transform, и они не спорят за одно свойство. */
