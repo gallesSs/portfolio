@@ -1,0 +1,24 @@
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font: 500 11px var(--mono);
+  letter-spacing: 0.16em;
+}
+
+.item {
+  padding: 6px 9px;
+  color: var(--ink-dim);
+  transition: color 0.18s, background 0.18s;
+}
+
+.item:hover {
+  color: var(--ink);
+}
+
+/* Активный язык — не кнопка, а отметка: он подсвечен, но по-прежнему
+   кликабелен, чтобы не ловить промах курсором. */
+.item[aria-current] {
+  color: var(--void);
+  background: var(--amber);
+}

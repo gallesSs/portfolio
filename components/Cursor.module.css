@@ -5,33 +5,121 @@
   pointer-events: none;
 }
 
-.dot,
-.ring {
+/*  Курсор не имеет собственного цвета: он смешивается по difference и
+    потому всегда контрастен фону — белый на графите, тёмный на бумажной
+    главе, инвертированный поверх крупных букв.
+
+    Смешивание висит на самих фигурах, а не на слое: слой растянут на
+    весь экран, и блендить пришлось бы весь вьюпорт на каждое движение
+    мыши. Прозрачность — там же, потому что opacity меньше единицы
+    изолирует группу и смешивание перестало бы доставать до страницы.  */
+.cross,
+.box {
+  opacity: 0;
+  mix-blend-mode: difference;
+  transition: opacity 0.25s ease;
+}
+
+/* До первого движения мыши мы не знаем, где она. Показывать прицел
+   в середине экрана — врать: курсора там нет. */
+.layer[data-on] .cross,
+.layer[data-on] .box {
+  opacity: 1;
+}
+
+/* ── перекрестье: идёт за рукой без задержки ──────────────────────── */
+
+.cross {
   position: absolute;
   top: 0;
   left: 0;
-  margin: -3px 0 0 -3px;
+  width: 22px;
+  height: 22px;
+  translate: -50% -50%;
   will-change: transform;
 }
 
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--amber);
+.cross i {
+  position: absolute;
+  background: #fff;
 }
 
-.ring {
+/* Четыре штриха с дырой посередине: сплошной крест закрывал бы ровно
+   то, на что человек целится. */
+.cross i:nth-child(1),
+.cross i:nth-child(3) {
+  left: 50%;
+  width: 1px;
+  height: 7px;
+  margin-left: -0.5px;
+}
+.cross i:nth-child(1) {
+  top: 0;
+}
+.cross i:nth-child(3) {
+  bottom: 0;
+}
+
+.cross i:nth-child(2),
+.cross i:nth-child(4) {
+  top: 50%;
+  height: 1px;
+  width: 7px;
+  margin-top: -0.5px;
+}
+.cross i:nth-child(2) {
+  right: 0;
+}
+.cross i:nth-child(4) {
+  left: 0;
+}
+
+/* ── рамка: догоняет и садится на элемент ─────────────────────────── */
+
+.box {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 34px;
   height: 34px;
-  margin: 0;
-  border: 1px solid var(--steel);
-  border-radius: 50%;
-  opacity: 0.45;
-  transform-origin: center;
   translate: -50% -50%;
-  transition: width 0.18s, height 0.18s, border-radius 0.18s, opacity 0.18s;
+  will-change: transform, width, height;
+  transition: opacity 0.25s ease, scale 0.16s ease;
 }
 
-/* Кольцо центрируется через translate, точка — через отрицательный margin:
-   так у каждого свой transform, и они не спорят за одно свойство. */
+/* Нажатие подтягивает рамку внутрь — как перевод фокуса на объект. */
+.layer[data-press] .box {
+  scale: 0.9;
+}
+
+.box i {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 1px solid #fff;
+}
+
+.box i:nth-child(1) {
+  top: 0;
+  left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.box i:nth-child(2) {
+  top: 0;
+  right: 0;
+  border-left: 0;
+  border-bottom: 0;
+}
+.box i:nth-child(3) {
+  right: 0;
+  bottom: 0;
+  border-left: 0;
+  border-top: 0;
+}
+.box i:nth-child(4) {
+  bottom: 0;
+  left: 0;
+  border-right: 0;
+  border-top: 0;
+}

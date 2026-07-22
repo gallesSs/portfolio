@@ -1,0 +1,1132 @@
+/*  Стили быстрой версии.
+
+    Одна тема на все секции — иначе кегли и отступы разъезжаются между
+    файлами. Порядок сверху вниз повторяет порядок глав на странице.  */
+
+.page {
+  position: relative;
+  overflow-x: clip;
+}
+
+/* ── общее для глав ─────────────────────────────────────────────── */
+
+.meta {
+  font: 500 11px var(--mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.chapterNo {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(44px, 6.5vw, 92px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--line-lit);
+}
+
+@supports (-webkit-text-stroke: 1px #000) {
+  .chapterNo {
+    color: transparent;
+    -webkit-text-stroke: 1.2px var(--amber);
+    opacity: 0.65;
+  }
+}
+
+.chapterTitle {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(28px, 4.2vw, 60px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.chapterNote {
+  max-width: 36ch;
+  margin-top: 18px;
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.62;
+}
+
+/*  Заметка на полях: реплика от себя, а не подпись к блоку. Выноска
+    слева — как карандашная линия к абзацу; без неё это просто ещё один
+    серый текст, а с ней видно, что кто-то остановился и дописал.  */
+.note {
+  position: relative;
+  max-width: 30ch;
+  padding-left: 26px;
+  color: var(--steel);
+  font: 400 12px/1.6 var(--mono);
+}
+
+.note::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 16px;
+  height: 1px;
+  background: var(--amber);
+}
+
+.noteDark {
+  color: rgba(18, 20, 26, 0.6);
+}
+.noteDark::before {
+  background: var(--paper-hot);
+}
+
+/* ── плёнка поверх всего ────────────────────────────────────────── */
+
+.film {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+  mix-blend-mode: overlay;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 95% at 50% 42%, transparent 42%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+/* ── HUD монтажной ──────────────────────────────────────────────── */
+
+.hud {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  color: var(--ink-dim);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color 0.45s ease;
+  /* цвет подложки под HUD — переворачивается вместе с ним */
+  --scrim: 11, 13, 17;
+}
+
+/* Светлая глава переворачивает HUD, а не прячет его. */
+.hud[data-lit="true"] {
+  color: rgba(18, 20, 26, 0.62);
+  --scrim: 233, 228, 216;
+}
+
+/*  Крупный текст подъезжает вплотную под тайм-код и съедает его.
+    Растушёванная подложка возвращает читаемость, оставаясь незаметной
+    на пустом фоне.  */
+.hudTop::before,
+.scrub::before {
+  content: "";
+  position: absolute;
+  left: -22px;
+  right: -22px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hudTop::before {
+  top: -12px;
+  bottom: -30px;
+  background: linear-gradient(
+    rgba(var(--scrim), 0.95) 0%,
+    rgba(var(--scrim), 0.88) 42%,
+    rgba(var(--scrim), 0) 100%
+  );
+}
+
+.scrub::before {
+  top: -30px;
+  bottom: -22px;
+  background: linear-gradient(
+    rgba(var(--scrim), 0) 0%,
+    rgba(var(--scrim), 0.48) 45%,
+    rgba(var(--scrim), 0.92) 100%
+  );
+}
+
+.hudTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 22px;
+}
+
+.hudLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Переключатель — единственное кликабельное в HUD сверху, поэтому
+   события мыши включаем точечно, а не всему слою. */
+.hudLang {
+  pointer-events: auto;
+}
+
+.rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--amber);
+}
+.hud[data-lit="true"] .rec {
+  color: var(--paper-hot);
+}
+
+.rec i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: blink 1.7s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  0%,
+  58% {
+    opacity: 1;
+  }
+  59%,
+  100% {
+    opacity: 0.14;
+  }
+}
+
+.hudChapter {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hudTime {
+  color: var(--ink);
+}
+.hud[data-lit="true"] .hudTime {
+  color: var(--paper-ink);
+}
+
+.hudTime em {
+  margin-left: 7px;
+  font-style: normal;
+  opacity: 0.45;
+}
+
+.scrub {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 22px;
+  height: 24px;
+}
+
+.scrubTrack {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.22;
+}
+
+.scrubFill {
+  position: absolute;
+  inset: 0;
+  background: var(--amber);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.hud[data-lit="true"] .scrubFill {
+  background: var(--paper-hot);
+}
+
+.mark {
+  position: absolute;
+  top: 0;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translateX(-50%);
+  transition: opacity 0.2s, color 0.2s;
+}
+.mark:hover {
+  opacity: 1;
+  color: var(--amber);
+}
+.hud[data-lit="true"] .mark:hover {
+  color: var(--paper-hot);
+}
+
+.markDot {
+  width: 1px;
+  height: 7px;
+  background: currentColor;
+}
+
+.markText {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+}
+
+.dev {
+  position: absolute;
+  left: 22px;
+  bottom: 62px;
+  display: flex;
+  gap: 18px;
+  padding: 9px 13px;
+  border: 1px solid var(--line-lit);
+  background: rgba(11, 13, 17, 0.86);
+  color: var(--amber);
+  font-size: 10px;
+}
+
+/* ── 00 · заставка ──────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  display: grid;
+  /*  Колонку фиксируем явно. Без этого grid-трек считается по max-content
+      и раздувается под строку, которая ещё не подогнана по ширине, —
+      а подгонка меряется как раз по родителю и потому решает, что всё
+      уже поместилось. Классическая петля, ловится только так.  */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: clamp(18px, 3vh, 34px);
+  min-height: 100dvh;
+  padding: 62px 22px 96px;
+  overflow: hidden;
+}
+
+/* Две метки, а не три: ряд из трёх равных подписей поперёк экрана —
+   первое, по чему видно, что раскладку никто не выбирал. */
+.heroMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/*  Набор садится вниз, а воздух собирается сверху одним куском. Блок,
+    выровненный по центру, оставляет две одинаковые пустые полосы — и
+    экран сразу выглядит как заготовка, в которую забыли что-то
+    доложить.  */
+.heroType {
+  align-self: end;
+  width: 100%;
+}
+
+.heroName {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: clamp(10px, 1.8vw, 20px);
+}
+
+.heroNameText {
+  font: 500 clamp(12px, 1.4vw, 16px) var(--mono);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--amber);
+  white-space: nowrap;
+}
+
+/* Волосяная линия добивает строку до края — как в наборной полосе. */
+.rule {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.heroLine {
+  will-change: transform, opacity;
+}
+
+/*  Вторая строка короче первой и уходит вправо, а в открывшийся слева
+    провал садится абзац. Обе строки в край смотрелись бы как две
+    одинаковые плашки — ровно, спокойно и совершенно безлико.  */
+.heroSplit {
+  display: grid;
+  grid-template-columns: minmax(0, 34%) minmax(0, 62%);
+  gap: 4%;
+  align-items: end;
+}
+
+.big {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(38px, 11vw, 260px);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+}
+
+/*  Вторая строка гаснет, а не выворачивается контуром: буквы Unbounded
+    собраны из перекрывающихся контуров, и -webkit-text-stroke честно
+    обводит каждый — внутри «П» и «Н» вылезают лишние рёбра. На цифрах
+    это незаметно (там один контур), на словах — выглядит как брак.  */
+.bigGhost {
+  color: #333d4c;
+}
+
+.heroPitch {
+  margin-bottom: 0.7em;
+  color: var(--ink-dim);
+  font-size: clamp(14px, 1.25vw, 17px);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.heroCue {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(22px, 4vh, 48px);
+  color: var(--steel);
+  font: 500 11px var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.heroCue kbd {
+  padding: 3px 6px;
+  border: 1px solid var(--line-lit);
+  border-radius: 3px;
+  font: inherit;
+}
+
+/* Луч проявки: буквы выезжают ровно за ним. */
+.scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  box-shadow: 0 0 44px 12px rgba(240, 178, 94, 0.16);
+  animation: sweep 1.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+}
+
+@keyframes sweep {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  10% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100dvh);
+  }
+}
+
+/* ── 01 · работы ────────────────────────────────────────────────── */
+
+/*  Без JS и на узком экране — обычная вертикальная лента. Горизонталь
+    включает только скрипт, и только когда точно знает высоту секции.  */
+
+.works {
+  position: relative;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 68px;
+  padding: clamp(70px, 11vh, 130px) 22px;
+}
+
+.slide {
+  position: relative;
+}
+
+/* Хвостовой кадр — часть горизонтального проезда. В вертикальной ленте
+   он превращается в висящую в воздухе цифру, поэтому там его нет. */
+.slideTail,
+.holes {
+  display: none;
+}
+
+.works[data-rail="on"] .worksStick {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.works[data-rail="on"] .track {
+  display: flex;
+  align-items: center;
+  gap: clamp(40px, 7vw, 130px);
+  padding: 0 max(22px, 6vw);
+  width: max-content;
+  will-change: transform;
+}
+
+.works[data-rail="on"] .slide {
+  flex: 0 0 auto;
+  width: min(var(--w, 560px), 66vw);
+  transform: translateY(var(--drop, 0));
+}
+
+/* У каждого второго кадра номер уходит вниз-вправо. Одинаковая цифра в
+   одинаковом углу трижды подряд — это уже не приём, а шаблон. */
+.works[data-rail="on"] .slide[data-flip] .slideIndex {
+  top: auto;
+  left: auto;
+  right: -0.04em;
+  bottom: -0.34em;
+}
+
+.chapterAside {
+  margin-top: 26px;
+}
+
+.works[data-rail="on"] .slideOpen {
+  width: min(420px, 52vw);
+}
+
+.works[data-rail="on"] .slideTail {
+  display: block;
+}
+
+/* Перфорация киноплёнки по краям кадра. Едет медленнее ленты — от этого
+   зазора и возникает глубина. */
+.works[data-rail="on"] .holes {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(223, 228, 236, 0.11) 0 15px, transparent 15px 48px),
+    repeating-linear-gradient(90deg, rgba(223, 228, 236, 0.11) 0 15px, transparent 15px 48px),
+    linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
+  background-size: 48px 11px, 48px 11px, 100% 1px, 100% 1px;
+  background-position: 0 20px, 0 calc(100% - 20px), 0 44px, 0 calc(100% - 44px);
+  background-repeat: repeat-x;
+}
+
+.slideIndex {
+  position: absolute;
+  top: -0.44em;
+  left: -0.05em;
+  z-index: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(110px, 19vw, 300px);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: var(--line);
+  pointer-events: none;
+  user-select: none;
+}
+
+@supports (-webkit-text-stroke: 1px #000) {
+  .slideIndex {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--line-lit);
+  }
+}
+
+.slideBody {
+  position: relative;
+  z-index: 1;
+}
+
+.slideKicker {
+  margin-bottom: 14px;
+  color: var(--amber);
+  font: 500 11px var(--mono);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.slidePlate {
+  margin-bottom: 14px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(32px, 4.8vw, 68px);
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+}
+
+.slideTitle {
+  margin-bottom: 8px;
+  font-size: clamp(15px, 1.5vw, 19px);
+}
+
+.slideStack {
+  margin-bottom: 20px;
+  color: var(--steel);
+  font: 400 12px var(--mono);
+  letter-spacing: 0.05em;
+}
+
+.slideLine {
+  max-width: 44ch;
+  margin-bottom: 18px;
+  padding-left: 15px;
+  border-left: 1px solid var(--line-lit);
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.62;
+}
+
+.slideDemo {
+  display: inline-block;
+  margin-bottom: 22px;
+  padding: 9px 13px;
+  border: 1px dashed var(--line-lit);
+  color: var(--steel);
+  font: 400 11px var(--mono);
+}
+
+.slideCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 19px;
+  border: 1px solid var(--line-lit);
+  font: 500 11px var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 0.22s, background 0.22s, border-color 0.22s;
+}
+.slideCta:hover {
+  color: var(--void);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.slideCta i {
+  font-style: normal;
+  transition: transform 0.25s;
+}
+.slideCta:hover i {
+  transform: translateX(4px);
+}
+
+.slideEdge {
+  display: none;
+}
+
+.works[data-rail="on"] .slideEdge {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -30px;
+  writing-mode: vertical-rl;
+  color: var(--line-lit);
+  font: 500 10px var(--mono);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* ── 02 · инструмент, светлая глава ─────────────────────────────── */
+
+/*  Светлая глава должна помещаться в один кадр целиком: её приём —
+    вспышка, а вспышка, растянутая на два экрана, перестаёт быть
+    вспышкой. Четвёртая лента отняла высоту, поэтому поля и просветы
+    подобраны под неё.  */
+.paper {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(26px, 4vh, 54px);
+  padding: clamp(60px, 8vh, 104px) 22px;
+  background: var(--paper);
+  color: var(--paper-ink);
+  overflow: hidden;
+}
+
+/* Метка на полосе: боком, у самого края, набором в одну строку. */
+.edgeMark {
+  position: absolute;
+  left: 6px;
+  bottom: clamp(64px, 12vh, 150px);
+  writing-mode: vertical-rl;
+  color: var(--paper-hot);
+  font: 500 11px var(--mono);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.tickers {
+  display: grid;
+  gap: clamp(4px, 0.8vw, 12px);
+  margin-inline: -22px;
+}
+
+.ticker {
+  overflow: hidden;
+  padding: 5px 0;
+  border-top: 1px solid rgba(18, 20, 26, 0.13);
+  border-bottom: 1px solid rgba(18, 20, 26, 0.13);
+}
+
+.laneWrap {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.lane {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(28px, 5.2vw, 78px);
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+}
+
+/* Средняя лента приглушена: три сплошных подряд читаются как забор. */
+.tickers > :nth-child(2) .lane {
+  color: rgba(18, 20, 26, 0.26);
+}
+
+.laneItem {
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.laneItem:hover {
+  color: var(--paper-hot);
+}
+
+.laneDot {
+  margin: 0 0.36em;
+  font-size: 0.3em;
+  font-style: normal;
+  color: var(--paper-hot);
+  transform: translateY(-0.22em);
+}
+
+/*  Утверждение вместо цифр. Оно крупное не для красоты: это
+    единственное место на странице, где что-то заявлено, — остальное
+    показывает. Заметка справа снизу договаривает то, чего в заявлении
+    быть не должно.  */
+.paperFoot {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+  gap: clamp(26px, 5vw, 72px);
+  align-items: end;
+  padding-left: clamp(30px, 4vw, 54px);
+}
+
+.manifest {
+  max-width: 24ch;
+  color: var(--paper-ink);
+  font-size: clamp(19px, 2.35vw, 34px);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+}
+
+/* ── 03 · подход ────────────────────────────────────────────────── */
+
+.how {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(38px, 6vh, 72px);
+  padding: clamp(86px, 13vh, 156px) 22px;
+}
+
+/* Номер и название не в одну строку, а лесенкой — та же пара, что в
+   «Работах», но поставленная иначе, чтобы главы не рифмовались. */
+.howHead {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+}
+
+.howHead .chapterTitle {
+  margin-left: clamp(20px, 5.5vw, 96px);
+}
+
+.howBody {
+  position: relative;
+  padding-left: clamp(26px, 4.5vw, 68px);
+}
+
+/* Погашенная нитка, поверх неё — та же нитка, которую рисует прокрутка. */
+.howBody::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--line);
+}
+
+.thread {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  overflow: visible;
+}
+
+.thread path {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 2;
+}
+
+.steps {
+  display: grid;
+  gap: clamp(30px, 5vh, 62px);
+  list-style: none;
+}
+
+/*  Шаги уходят лесенкой вправо: разговор движется, а не перечисляется.
+    Выезжают вбок, а не снизу, — вертикаль в этой главе уже занята
+    линией, которую рисует прокрутка.  */
+/*  Заголовок слева, пояснение справа: шаг занимает всю ширину полосы.
+    В одну колонку правая половина экрана оставалась бы пустой, и
+    лесенка читалась бы не как замысел, а как недовёрстанное.  */
+.step {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  column-gap: clamp(20px, 4vw, 68px);
+  row-gap: 10px;
+  align-items: start;
+  opacity: 0.32;
+  transform: translateX(-18px);
+  transition: opacity 0.55s ease, transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.step[data-on="on"] {
+  opacity: 1;
+  transform: none;
+}
+
+.steps li:nth-child(2) {
+  margin-left: clamp(14px, 4.5vw, 76px);
+}
+.steps li:nth-child(3) {
+  margin-left: clamp(28px, 9vw, 152px);
+}
+
+.stepNo {
+  grid-column: 1 / -1;
+  color: var(--amber);
+  font: 500 11px var(--mono);
+  letter-spacing: 0.24em;
+}
+
+.stepTitle {
+  max-width: 22ch;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(19px, 2.5vw, 33px);
+  line-height: 1.16;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.stepText {
+  max-width: 46ch;
+  padding-top: 0.45em;
+  color: var(--ink-dim);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* ── 04 · контакт ───────────────────────────────────────────────── */
+
+.talk {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  gap: clamp(22px, 3.6vh, 42px);
+  min-height: 100dvh;
+  /* снизу оставляем место под шкалу HUD: она поверх и не должна
+     наезжать на последние кнопки */
+  padding: clamp(76px, 12vh, 130px) 22px clamp(120px, 16vh, 168px);
+  overflow: hidden;
+}
+
+.talkHead {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.talkMark {
+  color: var(--amber);
+  font: 500 11px var(--mono);
+  letter-spacing: 0.3em;
+}
+
+.talkWrap {
+  min-width: 0;
+}
+
+.talkBig {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(44px, 13vw, 300px);
+  line-height: 0.88;
+  letter-spacing: -0.05em;
+}
+
+.talkLine {
+  max-width: 48ch;
+  color: var(--ink-dim);
+  font-size: clamp(14px, 1.4vw, 18px);
+  line-height: 1.62;
+}
+
+.links {
+  display: grid;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.link {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  padding: clamp(15px, 2.2vw, 26px) 4px clamp(15px, 2.2vw, 26px) var(--in, 4px);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 0.3s, padding 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Список уходит лесенкой вправо: четыре строки, начатые из одной точки,
+   читаются как таблица контактов, а не как приглашение. */
+.links li:nth-child(2) .link {
+  --in: 20px;
+}
+.links li:nth-child(3) .link {
+  --in: 40px;
+}
+.links li:nth-child(4) .link {
+  --in: 60px;
+}
+
+/* Заливка приходит слева — оттуда же, откуда читают. */
+.link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--amber);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.link:hover::before,
+.link:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--void);
+  padding-left: calc(var(--in, 4px) + 16px);
+}
+
+.linkLabel {
+  position: relative;
+  display: block;
+  height: 1.1em;
+  overflow: hidden;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(21px, 3.2vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.linkLabel span {
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.link:hover .linkLabel span,
+.link:focus-visible .linkLabel span {
+  transform: translateY(-100%);
+}
+
+.linkHref {
+  color: var(--steel);
+  font: 400 12px var(--mono);
+  transition: color 0.3s;
+}
+.link:hover .linkHref,
+.link:focus-visible .linkHref {
+  color: rgba(11, 13, 17, 0.65);
+}
+
+.linkArrow {
+  font-size: 17px;
+  font-style: normal;
+  transition: transform 0.3s;
+}
+.link:hover .linkArrow,
+.link:focus-visible .linkArrow {
+  transform: translate(4px, -4px);
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: clamp(18px, 3.5vh, 40px);
+}
+
+.footLink {
+  padding: 12px 20px;
+  border: 1px solid var(--line-lit);
+  color: var(--ink-dim);
+  font: 500 11px var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color 0.2s, border-color 0.2s;
+}
+.footLink:hover {
+  color: var(--amber);
+  border-color: var(--amber);
+}
+
+/* ── узкие экраны ───────────────────────────────────────────────── */
+
+@media (max-width: 820px) {
+  .paperFoot {
+    padding-left: 0;
+  }
+  .edgeMark {
+    position: static;
+    writing-mode: horizontal-tb;
+    margin-bottom: -12px;
+  }
+  /* На телефоне воздух сверху занимает почти весь первый экран и
+     читается как пустая страница, а не как замысел. */
+  .heroType {
+    align-self: center;
+  }
+  /* На узком экране колонка в 34% превращается в щель — раскладываем
+     абзац и строку друг под друга. */
+  .heroSplit {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .heroSplit .heroPitch {
+    order: 2;
+    margin-bottom: 0;
+  }
+  .steps li:nth-child(2),
+  .steps li:nth-child(3) {
+    margin-left: 0;
+  }
+  .links li:nth-child(2) .link,
+  .links li:nth-child(3) .link,
+  .links li:nth-child(4) .link {
+    --in: 4px;
+  }
+  .hudChapter {
+    display: none;
+  }
+  .heroFoot {
+    gap: 18px;
+  }
+  .heroCue {
+    display: none;
+  }
+  .link {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .linkHref {
+    display: none;
+  }
+}
+
+/*  Две колонки держатся до последнего: на планшете, схлопнутые в одну,
+    они оставляли правую половину экрана пустой — а это ровно тот вид
+    «недовёрстанного», от которого страница и лечилась.  */
+@media (max-width: 640px) {
+  .paperFoot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .step {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stepText {
+    padding-top: 0;
+  }
+}
+
+/* ── поменьше движения ──────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .scan,
+  .rec i {
+    animation: none;
+  }
+  .scan {
+    display: none;
+  }
+  .step {
+    opacity: 1;
+    transform: none;
+  }
+  .link,
+  .link::before,
+  .linkLabel span,
+  .linkArrow,
+  .slideCta i {
+    transition: none;
+  }
+}

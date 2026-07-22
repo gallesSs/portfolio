@@ -1,0 +1,137 @@
+/*  place-content: center считал бы колонку по содержимому, и сетка
+    карточек с minmax(268px, 1fr) отказывалась ужиматься — на узком
+    экране страница уезжала вбок. Колонка задана явно, центрируем
+    отдельно по каждой оси.  */
+.wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  justify-items: center;
+  gap: 44px;
+  min-height: 100dvh;
+  padding: 72px 24px 32px;
+}
+
+.lang {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+}
+
+.lede {
+  max-width: min(60ch, 100%);
+  text-align: center;
+}
+
+.kicker {
+  margin-bottom: 14px;
+  font: 500 12px var(--mono);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.h1 {
+  margin-bottom: 16px;
+  font-size: clamp(30px, 5.5vw, 52px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.sub {
+  color: var(--ink-dim);
+  line-height: 1.65;
+}
+
+.paths {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+  gap: 18px;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.path {
+  padding: 26px 24px 22px;
+  border: 1px solid var(--line);
+  background: linear-gradient(#12151b, #0d1015);
+  transition: border-color 0.18s, transform 0.18s;
+}
+.path:hover {
+  border-color: var(--steel);
+  transform: translateY(-3px);
+}
+.hero:hover {
+  border-color: var(--amber);
+}
+
+.icon {
+  display: block;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.h2 {
+  margin: 14px 0 8px;
+  font-size: 21px;
+  letter-spacing: -0.01em;
+}
+
+.p {
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.tag {
+  display: inline-block;
+  margin-top: 16px;
+  font: 500 11px var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+.hero .tag {
+  color: var(--amber);
+}
+
+.aside {
+  display: none;
+}
+
+/*  Коридор — от 1280 px. Не потому, что «мобильные не поддерживаются»,
+    а потому, что ходьба от первого лица без клавиатуры превращается в
+    борьбу с экраном. Карточку убираем совсем — приглушённая плашка,
+    на которую нельзя нажать, раздражает сильнее её отсутствия, — но
+    строкой ниже объясняем, куда она делась.  */
+@media (max-width: 1279px) {
+  .hero {
+    display: none;
+  }
+
+  /* Оставшаяся карточка не должна растягиваться на всю полосу: одна
+     широкая и низкая плашка выглядит как остаток от двух. */
+  .paths {
+    max-width: 430px;
+  }
+
+  .aside {
+    display: block;
+    max-width: 52ch;
+    color: var(--steel);
+    font: 500 11px/1.75 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    text-wrap: pretty;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .path {
+    transition: none;
+  }
+}

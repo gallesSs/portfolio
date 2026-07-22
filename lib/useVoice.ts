@@ -14,17 +14,20 @@ import { useCallback, useEffect, useRef, useState } from "react";
     синтетической огибающей в mouth.current пойдёт настоящая громкость.
     Всё остальное — робот, комнаты, реплики — не изменится ни на строку.  */
 
-const RU = /^ru/i;
-
-function pickVoice(): SpeechSynthesisVoice | null {
-  const all = speechSynthesis.getVoices().filter((v) => RU.test(v.lang));
+/*  Голос ищем по языку страницы. Украинских голосов в системах пока
+    мало, поэтому отсутствие — штатная ситуация: тогда отдаём тег языка
+    синтезатору и пусть выкручивается сам, а не читает украинский текст
+    английской фонетикой.  */
+function pickVoice(lang: string): SpeechSynthesisVoice | null {
+  const base = lang.split("-")[0].toLowerCase();
+  const all = speechSynthesis.getVoices().filter((v) => v.lang.replace("_", "-").toLowerCase().startsWith(base));
   if (!all.length) return null;
-  // мужской, если система его называет; иначе первый русский
-  const male = all.find((v) => /male|дмитр|павел|юри|artem|pavel|dmitr/i.test(v.name) && !/female/i.test(v.name));
+  // мужской, если система его так называет; иначе первый подходящий
+  const male = all.find((v) => /male|man|дмитр|павел|artem|pavel|dmitr/i.test(v.name) && !/female/i.test(v.name));
   return male ?? all[0];
 }
 
-export function useVoice() {
+export function useVoice(lang: string) {
   const mouth = useRef(0); // 0…1, читается роботом покадрово — без ререндеров
   const [speaking, setSpeaking] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -36,14 +39,14 @@ export function useVoice() {
   useEffect(() => {
     if (!supported) return;
     // Голоса приезжают асинхронно — иначе первый вызов останется немым.
-    const warm = () => pickVoice();
+    const warm = () => pickVoice(lang);
     speechSynthesis.addEventListener("voiceschanged", warm);
     warm();
     return () => {
       speechSynthesis.removeEventListener("voiceschanged", warm);
       speechSynthesis.cancel();
     };
-  }, [supported]);
+  }, [supported, lang]);
 
   // Огибающая рта: быстрый слоговой пульс, поверх — медленное дыхание фразы,
   // плюс паузы между словами. Не липсинк, но ритм речи считывается.
@@ -83,9 +86,9 @@ export function useVoice() {
       speechSynthesis.cancel(); // перебиваем предыдущую реплику, а не копим очередь
 
       const u = new SpeechSynthesisUtterance(text);
-      const v = pickVoice();
+      const v = pickVoice(lang);
       if (v) u.voice = v;
-      u.lang = v?.lang ?? "ru-RU";
+      u.lang = v?.lang ?? lang;
       u.rate = 1.02;
       u.pitch = 0.82; // чуть ниже — робот, а не диктор новостей
 
@@ -104,7 +107,7 @@ export function useVoice() {
 
       speechSynthesis.speak(u);
     },
-    [muted, supported],
+    [muted, supported, lang],
   );
 
   const toggleMute = useCallback(() => {

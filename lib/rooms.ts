@@ -1,32 +1,11 @@
-/*  Единственный источник правды о комнатах.
-    Отсюда читают и 3D-коридор, и текстовые страницы, и меню.
-    Реплики — намеренно заглушки: их надо переписать своим голосом,
-    иначе весь приём «поговори со мной» не работает.  */
+import type { Dict } from "./i18n";
 
-export type Ask = {
-  q: string;
-  a: string;
-};
+/*  Здесь остаётся только то, что не переводится: геометрия коридора,
+    характер дверей и адреса ссылок. Весь текст живёт в словарях и
+    приклеивается к геометрии на месте — так коридор, рил и меню не
+    могут разойтись, а перевод не может забыть комнату.  */
 
-export type Room = {
-  slug: string;
-  plate: string; // табличка на двери
-  kicker: string;
-  title: string;
-  stack: string;
-  /** позиция двери вдоль коридора, в метрах от входа */
-  z: number;
-  side: "left" | "right";
-  /** характер двери — материал говорит о проекте раньше, чем ты вошёл */
-  door: DoorStyle;
-  demo?: {
-    /** iframe с приложением в демо-режиме; данных за ним нет */
-    src: string;
-    caption: string;
-  };
-  line: string;
-  asks: Ask[];
-};
+export type Ask = { q: string; a: string };
 
 export type DoorStyle = {
   /** цвет полотна */
@@ -45,76 +24,77 @@ export const CORRIDOR = {
   eye: 1.62,
 } as const;
 
-export const ROOMS: Room[] = [
+const GEO = [
   {
     slug: "tasks",
-    plate: "Задачник",
-    kicker: "Комната 1 · PWA",
-    title: "Заголовок кейса — задачник",
-    stack: "Next.js · IndexedDB · офлайн-first",
+    /** позиция двери вдоль коридора, в метрах от входа */
     z: -9,
     side: "left",
+    /** материал говорит о проекте раньше, чем ты вошёл */
     door: { panel: "#2b3340", light: "#cfe0f5", window: 0.42 },
-    demo: {
-      src: "",
-      caption: "Слот под живую демку: iframe с приложением на моках.",
-    },
-    line: "Реплика гида. Одна-две фразы живым языком — так, как вы рассказали бы это вслух.",
-    asks: [
-      { q: "Почему именно так?", a: "Ответ. Две-три фразы про выбор и его причину." },
-      { q: "Что было тяжелее всего?", a: "Ответ. Конкретная проблема и как вы её обошли." },
-      { q: "А что не получилось?", a: "Ответ. Честно. Эта ветка обязательна: она читается как уверенность." },
-    ],
+    /** iframe с приложением в демо-режиме; данных за ним нет */
+    demoSrc: "",
   },
   {
     slug: "recipes",
-    plate: "Рецепты",
-    kicker: "Комната 2 · PWA",
-    title: "Заголовок кейса — книга рецептов",
-    stack: "Next.js · распознавание по фото",
     z: -20,
     side: "right",
     door: { panel: "#5a3a22", light: "#ffcf8a", window: 0.3 },
-    demo: {
-      src: "",
-      caption: "Слот под демку с лимитом запросов: три распознавания в сутки на IP.",
-    },
-    line: "Реплика гида про рецепты. Тут уместно показать фокус: фото страницы превращается в структуру.",
-    asks: [
-      { q: "Как это вообще работает?", a: "Ответ. Модель возвращает не текст, а структуру: ингредиенты и шаги." },
-      { q: "Что было тяжелее всего?", a: "Ответ. Про самый упрямый случай — например, рукописный текст." },
-      { q: "А что не получилось?", a: "Ответ. Честно, без самобичевания." },
-    ],
+    demoSrc: "",
   },
   {
     slug: "about",
-    plate: "Обо мне",
-    kicker: "Комната 3",
-    title: "Кто это всё построил",
-    stack: "Next.js · TypeScript",
     z: -31,
     side: "left",
     door: { panel: "#3a2f45", light: "#e6d2ff", window: 0 },
-    line: "Реплика про себя. Не резюме — характер: что нравится в работе и что раздражает.",
-    asks: [
-      { q: "Чем ты занимаешься?", a: "Ответ про стек и любимые задачи." },
-      { q: "Что тебя цепляет?", a: "Ответ про момент, когда сложное становится простым." },
-      { q: "Ищешь работу?", a: "Ответ. Прямо и без кокетства." },
-    ],
+    demoSrc: "",
   },
-];
+] as const;
 
-/** Контакты — не дверь. До них надо дойти. */
-export const FINALE = {
-  kicker: "Конец коридора",
-  title: "Вы дошли до конца",
-  line: "Финальная реплика. Поблагодарить и позвать написать — коротко, без пафоса.",
-  links: [
-    { label: "Почта", href: "mailto:" },
-    { label: "Telegram", href: "#" },
-    { label: "GitHub", href: "#" },
-    { label: "Резюме", href: "#" },
-  ],
-} as const;
+export type RoomSlug = (typeof GEO)[number]["slug"];
 
-export const bySlug = (slug: string) => ROOMS.find((r) => r.slug === slug);
+export type Room = {
+  slug: RoomSlug;
+  z: number;
+  side: "left" | "right";
+  door: DoorStyle;
+  /** табличка на двери */
+  plate: string;
+  kicker: string;
+  title: string;
+  stack: string;
+  line: string;
+  demo?: { src: string; caption: string };
+  asks: Ask[];
+};
+
+export function roomsOf(t: Dict): Room[] {
+  return GEO.map((geo) => {
+    const copy = t.rooms[geo.slug];
+    return {
+      slug: geo.slug,
+      z: geo.z,
+      side: geo.side,
+      door: geo.door,
+      plate: copy.plate,
+      kicker: copy.kicker,
+      title: copy.title,
+      stack: copy.stack,
+      line: copy.line,
+      demo: copy.demo ? { src: geo.demoSrc, caption: copy.demo } : undefined,
+      asks: copy.asks,
+    };
+  });
+}
+
+/** Контакты — не дверь. До них надо дойти. Порядок совпадает с подписями в словаре. */
+export const FINALE_HREFS = ["mailto:", "#", "#", "#"];
+
+export function finaleOf(t: Dict) {
+  return {
+    kicker: t.finale.kicker,
+    title: t.finale.title,
+    line: t.finale.line,
+    links: t.finale.links.map((label, i) => ({ label, href: FINALE_HREFS[i] ?? "#" })),
+  };
+}

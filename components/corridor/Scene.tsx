@@ -11,7 +11,7 @@ import { Html } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 
-import { CORRIDOR, ROOMS, type Room } from "@/lib/rooms";
+import { CORRIDOR, type Room } from "@/lib/rooms";
 import { wallTexture, wallBump, floorTexture } from "@/lib/textures";
 import styles from "./Scene.module.css";
 
@@ -220,7 +220,7 @@ const FRICTION = 7;
 const MAX_SPEED = 3.1;
 const STOP = -(LEN - 1.4);
 
-function Walker({ onTarget, locked }: { onTarget: (t: Target) => void; locked: boolean }) {
+function Walker({ rooms, onTarget, locked }: { rooms: Room[]; onTarget: (t: Target) => void; locked: boolean }) {
   const { camera } = useThree();
   const vel = useRef(0);
   const yaw = useRef(0);
@@ -318,7 +318,7 @@ function Walker({ onTarget, locked }: { onTarget: (t: Target) => void; locked: b
     camera.position.y = EYE + sway;
 
     let next: Target = null;
-    for (const r of ROOMS) if (Math.abs(z - r.z) < 1.7) next = r;
+    for (const r of rooms) if (Math.abs(z - r.z) < 1.7) next = r;
     if (z < STOP + 3) next = "finale"; // у торца финал важнее любой двери
 
     if (next !== current.current) {
@@ -333,10 +333,12 @@ function Walker({ onTarget, locked }: { onTarget: (t: Target) => void; locked: b
 /* ─── Сцена ───────────────────────────────────────────────────── */
 
 export default function Scene({
+  rooms,
   onTarget,
   locked,
   onReady,
 }: {
+  rooms: Room[];
   onTarget: (t: Target) => void;
   locked: boolean;
   onReady: () => void;
@@ -361,12 +363,12 @@ export default function Scene({
 
       <Lamps />
       <Shell />
-      {ROOMS.map((r) => (
+      {rooms.map((r) => (
         <Door key={r.slug} room={r} />
       ))}
       <EndWall />
 
-      <Walker onTarget={onTarget} locked={locked} />
+      <Walker rooms={rooms} onTarget={onTarget} locked={locked} />
 
       <EffectComposer>
         <Bloom intensity={0.85} luminanceThreshold={0.42} luminanceSmoothing={0.4} mipmapBlur />
