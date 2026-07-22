@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import type { Dict } from "@/lib/i18n";
+import type { ReelDict } from "@/lib/i18n";
 import { progressOf, useFrame } from "@/lib/scroll";
 import Kinetic from "./Kinetic";
 import s from "./reel.module.css";
@@ -16,7 +16,7 @@ import s from "./reel.module.css";
     Шаг загорается, когда линия до него дошла. Не «появился в зоне
     видимости», а именно дошла — тогда причина и следствие совпадают.  */
 
-export default function Process({ t }: { t: Dict }) {
+export default function Process({ t }: { t: ReelDict }) {
   const box = useRef<HTMLElement>(null);
   const path = useRef<SVGPathElement>(null);
   const steps = useRef<HTMLLIElement[]>([]);
@@ -56,7 +56,7 @@ export default function Process({ t }: { t: Dict }) {
     <section id="how" ref={box} className={s.how}>
       <div className={s.howHead}>
         <p className={s.chapterNo}>03</p>
-        <Kinetic as="h2" className={s.chapterTitle} text={t.reel.how.title} mode="drift" step={36} />
+        <Kinetic as="h2" className={s.chapterTitle} text={t.how.title} mode="drift" step={36} />
       </div>
 
       <div className={s.howBody}>
@@ -65,7 +65,7 @@ export default function Process({ t }: { t: Dict }) {
         </svg>
 
         <ol className={s.steps}>
-          {t.reel.how.steps.map((step, i) => (
+          {t.how.steps.map((step, i) => (
             <li
               key={step.t}
               className={s.step}

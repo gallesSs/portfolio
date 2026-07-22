@@ -99,16 +99,18 @@ export const en = {
 
     works: {
       title: "Work",
-      note: "Three projects. The same material that sits behind the doors in the corridor — only shown all at once, with no walking.",
+      note: "Three projects: what each one is, what it runs on, and what was genuinely hard about it.",
       tail: "Next: what it's made of.",
       cta: "Go in and ask about it",
+      /** та же кнопка, пока коридора нет: ведёт в контакты */
+      ask: "Ask about this one",
     },
 
     /*  Заметки на полях: короткие реплики от себя, а не подписи к блокам.
         Ради них тут вообще есть поля — страница без них ровная, как
         таблица.  */
     notes: {
-      works: "Every one of these has a whole conversation waiting behind its door in the corridor.",
+      works: "The hard part of each one is the part worth asking about.",
       stack: "Half the freelancers on earth list the same tools. The difference is what you do with them.",
     },
 
@@ -144,6 +146,9 @@ export const en = {
 
     talk: {
       big: "LET'S TALK",
+      back: "← Back to the fork",
+      corridor: "Walk the corridor →",
+      top: "↑ Back to the start",
       line: "Always open to work — from a one-off freelance job to something long-term. I answer within a day; if it's urgent, say so up front and we'll start there.",
     },
   },

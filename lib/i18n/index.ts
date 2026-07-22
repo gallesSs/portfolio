@@ -11,6 +11,12 @@ export const DICTS = { en, uk } as const;
 export type Locale = keyof typeof DICTS;
 export type { Dict };
 
+/*  Быстрой версии нужен только её раздел. Компоненты берут именно его —
+    целый словарь ушёл бы пропсом в клиентские компоненты и осел в RSC-
+    payload прямо в HTML, вместе с текстом коридора, которого на этой
+    странице нет.  */
+export type ReelDict = Dict["reel"];
+
 export const LOCALES = Object.keys(DICTS) as Locale[];
 
 /** Английский основной: без префикса и по умолчанию. */

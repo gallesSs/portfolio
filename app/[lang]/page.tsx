@@ -1,18 +1,39 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import Lang from "@/components/Lang";
+import Reel from "@/components/reel/Reel";
+import { SHOW_CORRIDOR } from "@/lib/flags";
 import { dictOf, isLocale } from "@/lib/i18n";
 import styles from "./page.module.css";
 
-/*  Развилка на входе. Коридор — не гейт: спешащему видно, куда свернуть,
-    и формулировка снимает чувство, что он что-то упускает.  */
+/*  Корень локали.
+
+    Пока коридор снят с публики, выбирать не из чего — и промежуточный
+    экран «как вы хотите это смотреть?» с одной карточкой был бы просто
+    лишним кликом. Поэтому в корне лежит сама быстрая версия, и ссылка,
+    которую человек кладёт в подпись, выглядит как /en, а не /en/reel.
+
+    Развилка не удалена: она включается тем же флагом, что и коридор.  */
+
+export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = dictOf(lang);
+  const meta = SHOW_CORRIDOR ? t.meta.home : t.meta.reel;
+  return { title: meta.title, description: meta.description };
+}
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = dictOf(lang);
 
+  if (!SHOW_CORRIDOR) return <Reel lang={lang} t={t} />;
+
+  /*  Развилка на входе. Коридор — не гейт: спешащему видно, куда свернуть,
+      и формулировка снимает чувство, что он что-то упускает.  */
   return (
     <main className={styles.wrap}>
       <Lang lang={lang} className={styles.lang} />

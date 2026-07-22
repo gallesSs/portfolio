@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-import type { Dict } from "@/lib/i18n";
+import type { ReelDict } from "@/lib/i18n";
 import { clamp01, useFrame } from "@/lib/scroll";
 import Kinetic from "./Kinetic";
 import Scramble from "./Scramble";
@@ -20,7 +20,7 @@ import s from "./reel.module.css";
     открывает следующую главу и сразу объясняет, что страница
     читается прокруткой.  */
 
-export default function Hero({ t }: { t: Dict }) {
+export default function Hero({ t }: { t: ReelDict }) {
   const big = useRef<HTMLDivElement>(null);
   const ghost = useRef<HTMLDivElement>(null);
   const foot = useRef<HTMLDivElement>(null);
@@ -43,32 +43,32 @@ export default function Hero({ t }: { t: Dict }) {
     <section id="start" className={s.hero}>
       {/* Экранным читалкам и поисковику — обычное предложение, а не
           россыпь букв из декоративных строк ниже. */}
-      <h1 className="srOnly">{`${t.reel.name} — ${t.reel.big} ${t.reel.ghost}`}</h1>
+      <h1 className="srOnly">{`${t.name} — ${t.big} ${t.ghost}`}</h1>
 
       <div className={s.heroMeta}>
-        <Scramble className={s.meta} text={t.reel.label} />
-        <Scramble className={s.meta} text={t.reel.place} />
+        <Scramble className={s.meta} text={t.label} />
+        <Scramble className={s.meta} text={t.place} />
       </div>
 
       <div className={s.heroType}>
         <p className={s.heroName}>
-          <Kinetic as="span" className={s.heroNameText} text={t.reel.name} step={22} />
+          <Kinetic as="span" className={s.heroNameText} text={t.name} step={22} />
           <i className={s.rule} aria-hidden />
         </p>
 
         <div ref={big} className={s.heroLine}>
-          <Kinetic className={s.big} text={t.reel.big} fit max={280} step={40} flee={20} hidden />
+          <Kinetic className={s.big} text={t.big} fit max={280} step={40} flee={20} hidden />
         </div>
 
         {/*  Вторая строка занимает свою колонку, а слева от неё стоит
              абзац. Подгонка кегля меряет край по колонке, так что строка
              садится в неё ровно, какой бы длины ни было слово.  */}
         <div className={s.heroSplit}>
-          <p className={s.heroPitch}>{t.reel.pitch}</p>
+          <p className={s.heroPitch}>{t.pitch}</p>
           <div ref={ghost} className={s.heroLine}>
             <Kinetic
               className={`${s.big} ${s.bigGhost}`}
-              text={t.reel.ghost}
+              text={t.ghost}
               fit
               max={240}
               step={34}
@@ -81,7 +81,7 @@ export default function Hero({ t }: { t: Dict }) {
 
         <p ref={foot} className={s.heroCue}>
           <span aria-hidden>↓</span>
-          {t.reel.cue} <kbd>0</kbd>–<kbd>4</kbd> {t.reel.cueTail}
+          {t.cue} <kbd>0</kbd>–<kbd>4</kbd> {t.cueTail}
         </p>
       </div>
 

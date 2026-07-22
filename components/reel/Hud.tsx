@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import Lang from "@/components/Lang";
-import type { Dict, Locale } from "@/lib/i18n";
+import type { Locale, ReelDict } from "@/lib/i18n";
 import { CHAPTERS, REEL } from "@/lib/reel";
 import { useFrame } from "@/lib/scroll";
 import s from "./reel.module.css";
@@ -33,7 +33,7 @@ const KONAMI = [
 
 const stamp = (sec: number) => `00:${String(Math.round(sec)).padStart(2, "0")}`;
 
-export default function Hud({ lang, t }: { lang: Locale; t: Dict }) {
+export default function Hud({ lang, t }: { lang: Locale; t: ReelDict }) {
   const time = useRef<HTMLSpanElement>(null);
   const label = useRef<HTMLSpanElement>(null);
   const fill = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ export default function Hud({ lang, t }: { lang: Locale; t: Dict }) {
   const paper = useRef<HTMLElement | null>(null);
   //  Подписи считаем на каждый рендер, а не кладём в ref: useFrame всегда
   //  вызывает свежее замыкание, так что смена языка доезжает сама.
-  const names = CHAPTERS.map((c) => `${c.n} · ${t.reel.chapters[c.id]}`);
+  const names = CHAPTERS.map((c) => `${c.n} · ${t.chapters[c.id]}`);
 
   const jump = useCallback((id: string) => {
     const el = document.getElementById(id);
@@ -144,7 +144,7 @@ export default function Hud({ lang, t }: { lang: Locale; t: Dict }) {
         <span className={s.hudLeft}>
           <span className={s.rec}>
             <i aria-hidden />
-            {t.reel.hud.rec}
+            {t.hud.rec}
           </span>
           <Lang lang={lang} className={s.hudLang} />
         </span>
@@ -174,18 +174,18 @@ export default function Hud({ lang, t }: { lang: Locale; t: Dict }) {
           >
             <span className={s.markDot} aria-hidden />
             <span className={s.markText}>{CHAPTERS[i].n}</span>
-            <span className="srOnly">{`${t.reel.hud.jump}: ${t.reel.chapters[CHAPTERS[i].id]}`}</span>
+            <span className="srOnly">{`${t.hud.jump}: ${t.chapters[CHAPTERS[i].id]}`}</span>
           </button>
         ))}
       </div>
 
       {dev && (
         <div className={s.dev}>
-          <span>{t.reel.hud.dev}</span>
+          <span>{t.hud.dev}</span>
           <span>
             <span ref={fps}>60</span> fps
           </span>
-          <span>{t.reel.hud.devOff}</span>
+          <span>{t.hud.devOff}</span>
         </div>
       )}
     </div>

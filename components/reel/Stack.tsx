@@ -1,6 +1,6 @@
 "use client";
 
-import type { Dict } from "@/lib/i18n";
+import type { ReelDict } from "@/lib/i18n";
 import Ticker from "./Ticker";
 import s from "./reel.module.css";
 
@@ -25,20 +25,20 @@ import s from "./reel.module.css";
     и весь приём пропадает.  */
 const SPEEDS = [0.75, -0.5, 0.42, -0.64];
 
-export default function Stack({ t }: { t: Dict }) {
+export default function Stack({ t }: { t: ReelDict }) {
   return (
     <section id="stack" className={s.paper}>
-      <h2 className={s.edgeMark}>{`02 — ${t.reel.stack.title}`}</h2>
+      <h2 className={s.edgeMark}>{`02 — ${t.stack.title}`}</h2>
 
       <div className={s.tickers}>
-        {t.reel.stack.rows.map((row, i) => (
+        {t.stack.rows.map((row, i) => (
           <Ticker key={row[0]} items={row} speed={SPEEDS[i % SPEEDS.length]} />
         ))}
       </div>
 
       <div className={s.paperFoot}>
-        <p className={s.manifest}>{t.reel.stack.manifest}</p>
-        <p className={`${s.note} ${s.noteDark}`}>{t.reel.notes.stack}</p>
+        <p className={s.manifest}>{t.stack.manifest}</p>
+        <p className={`${s.note} ${s.noteDark}`}>{t.notes.stack}</p>
       </div>
     </section>
   );

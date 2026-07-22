@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
-import type { Dict, Locale } from "@/lib/i18n";
-import type { Room } from "@/lib/rooms";
+import { SHOW_CORRIDOR } from "@/lib/flags";
+import type { Locale, ReelDict } from "@/lib/i18n";
 import { clamp01, useFrame } from "@/lib/scroll";
 import Kinetic from "./Kinetic";
 import s from "./reel.module.css";
@@ -20,7 +20,17 @@ import s from "./reel.module.css";
     текущим положением мы превращаем в наклон. Это и есть ощущение
     веса: лента будто не успевает за рукой.  */
 
-type Props = { lang: Locale; t: Dict; rooms: Room[] };
+type Card = {
+  slug: string;
+  plate: string;
+  kicker: string;
+  title: string;
+  stack: string;
+  line: string;
+  demo?: { caption: string };
+};
+
+type Props = { lang: Locale; t: ReelDict; rooms: Card[] };
 
 /*  Ширина и вертикальный снос каждого кадра. Одинаковые карточки через
     равные промежутки — это таблица, а не лента: глаз перестаёт их
@@ -101,9 +111,9 @@ export default function Works({ lang, t, rooms }: Props) {
         <div ref={track} className={s.track}>
           <div className={`${s.slide} ${s.slideOpen}`}>
             <p className={s.chapterNo}>01</p>
-            <Kinetic as="h2" className={s.chapterTitle} text={t.reel.works.title} step={40} />
-            <p className={s.chapterNote}>{t.reel.works.note}</p>
-            <p className={`${s.note} ${s.chapterAside}`}>{t.reel.notes.works}</p>
+            <Kinetic as="h2" className={s.chapterTitle} text={t.works.title} step={40} />
+            <p className={s.chapterNote}>{t.works.note}</p>
+            <p className={`${s.note} ${s.chapterAside}`}>{t.notes.works}</p>
           </div>
 
           {rooms.map((room, i) => (
@@ -131,10 +141,20 @@ export default function Works({ lang, t, rooms }: Props) {
 
                 {room.demo && <p className={s.slideDemo}>{room.demo.caption}</p>}
 
-                <Link href={`/${lang}/corridor`} className={s.slideCta} data-magnetic>
-                  {t.reel.works.cta}
-                  <i aria-hidden>→</i>
-                </Link>
+                {/*  Пока коридора нет, кнопка ведёт не за дверь, а в
+                     контакты: обрывать кадр без единого действия хуже,
+                     чем предложить спросить.  */}
+                {SHOW_CORRIDOR ? (
+                  <Link href={`/${lang}/corridor`} className={s.slideCta} data-magnetic>
+                    {t.works.cta}
+                    <i aria-hidden>→</i>
+                  </Link>
+                ) : (
+                  <a href="#talk" className={s.slideCta} data-magnetic>
+                    {t.works.ask}
+                    <i aria-hidden>→</i>
+                  </a>
+                )}
               </div>
 
               <span className={s.slideEdge} aria-hidden>
@@ -144,7 +164,7 @@ export default function Works({ lang, t, rooms }: Props) {
           ))}
 
           <div className={`${s.slide} ${s.slideOpen} ${s.slideTail}`} aria-hidden>
-            <p className={s.chapterNote}>{t.reel.works.tail}</p>
+            <p className={s.chapterNote}>{t.works.tail}</p>
             <p className={s.chapterNo}>02</p>
           </div>
         </div>
