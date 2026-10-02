@@ -25,7 +25,7 @@ import s from "./reel.module.css";
     только за дверью в коридоре; отдавать их сюда значит класть в HTML
     страницы диалоги, которых на ней нет.  */
 function cards(t: Dict) {
-  return roomsOf(t).map(({ slug, plate, kicker, title, stack, line, demo }) => ({
+  return roomsOf(t).map(({ slug, plate, kicker, title, stack, line, demo, cta, link, href, shot }) => ({
     slug,
     plate,
     kicker,
@@ -33,6 +33,10 @@ function cards(t: Dict) {
     stack,
     line,
     demo: demo && { caption: demo.caption },
+    cta,
+    link,
+    href,
+    shot,
   }));
 }
 

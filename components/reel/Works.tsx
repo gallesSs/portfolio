@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
@@ -28,6 +29,10 @@ type Card = {
   stack: string;
   line: string;
   demo?: { caption: string };
+  cta?: string;
+  link?: string;
+  href?: string;
+  shot?: string;
 };
 
 type Props = { lang: Locale; t: ReelDict; rooms: Card[] };
@@ -38,8 +43,10 @@ type Props = { lang: Locale; t: ReelDict; rooms: Card[] };
     смысл — ритм должен быть неровным.  */
 const SHAPE = [
   { w: 560, drop: 0 },
-  { w: 500, drop: 62 },
+  { w: 500, drop: 22 },
   { w: 600, drop: -38 },
+  { w: 520, drop: 34 },
+  { w: 480, drop: -20 },
 ];
 
 export default function Works({ lang, t, rooms }: Props) {
@@ -133,6 +140,21 @@ export default function Works({ lang, t, rooms }: Props) {
               </span>
 
               <div className={s.slideBody}>
+                {/*  Скрин — первое, за что цепляется глаз, поэтому он же и
+                     ссылка: кликают по картинке чаще, чем по кнопке.  */}
+                {room.shot && (
+                  <a
+                    href={room.href}
+                    target="_blank"
+                    rel="noopener"
+                    className={s.slideShot}
+                    tabIndex={-1}
+                    aria-hidden
+                  >
+                    <Image src={room.shot} alt="" width={1440} height={900} sizes="(max-width: 900px) 92vw, 600px" />
+                  </a>
+                )}
+
                 <p className={s.slideKicker}>{room.kicker}</p>
                 <Kinetic as="h3" className={s.slidePlate} text={room.plate} mode="wipe" step={32} />
                 <p className={s.slideTitle}>{room.title}</p>
@@ -144,17 +166,31 @@ export default function Works({ lang, t, rooms }: Props) {
                 {/*  Пока коридора нет, кнопка ведёт не за дверь, а в
                      контакты: обрывать кадр без единого действия хуже,
                      чем предложить спросить.  */}
-                {SHOW_CORRIDOR ? (
-                  <Link href={`/${lang}/corridor`} className={s.slideCta} data-magnetic>
-                    {t.works.cta}
-                    <i aria-hidden>→</i>
-                  </Link>
-                ) : (
-                  <a href="#talk" className={s.slideCta} data-magnetic>
-                    {t.works.ask}
-                    <i aria-hidden>→</i>
-                  </a>
-                )}
+                <div className={s.slideCtas}>
+                  {room.href && (
+                    <a
+                      href={room.href}
+                      target="_blank"
+                      rel="noopener"
+                      className={room.demo ? `${s.slideCta} ${s.slideCtaHot}` : s.slideCta}
+                      data-magnetic
+                    >
+                      {room.link ?? t.works.live}
+                      <i aria-hidden>↗</i>
+                    </a>
+                  )}
+                  {SHOW_CORRIDOR ? (
+                    <Link href={`/${lang}/corridor`} className={s.slideCta} data-magnetic>
+                      {t.works.cta}
+                      <i aria-hidden>→</i>
+                    </Link>
+                  ) : (
+                    <a href="#talk" className={s.slideCta} data-magnetic>
+                      {room.cta ?? t.works.ask}
+                      <i aria-hidden>→</i>
+                    </a>
+                  )}
+                </div>
               </div>
 
               <span className={s.slideEdge} aria-hidden>

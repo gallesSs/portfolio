@@ -574,6 +574,33 @@
   z-index: 1;
 }
 
+/*  Скрин срезан по высоте, а не ужат целиком: лента живёт в одном
+    экране, и кадр 16:10 на всю ширину карточки вытолкнул бы текст за
+    нижний край. Верх первого экрана говорит о проекте больше низа.  */
+.slideShot {
+  display: block;
+  margin-bottom: 22px;
+  border: 1px solid var(--line-lit);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.slideShot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 32vh;
+  object-fit: cover;
+  object-position: top;
+  filter: saturate(0.85) brightness(0.9);
+  transition: filter 0.3s, transform 0.5s;
+}
+
+.slideShot:hover img {
+  filter: none;
+  transform: scale(1.02);
+}
+
 .slideKicker {
   margin-bottom: 14px;
   color: var(--amber);
@@ -622,6 +649,12 @@
   font: 400 11px var(--mono);
 }
 
+.slideCtas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .slideCta {
   display: inline-flex;
   align-items: center;
@@ -644,6 +677,17 @@
 }
 .slideCta:hover i {
   transform: translateX(4px);
+}
+
+/* Живое демо — главное действие карточки, поэтому залито сразу. */
+.slideCtaHot {
+  color: var(--void);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.slideCtaHot:hover {
+  background: var(--amber-hot);
+  border-color: var(--amber-hot);
 }
 
 .slideEdge {

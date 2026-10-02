@@ -42,7 +42,12 @@ export default function Contact({ lang, t, finale }: { lang: Locale; t: ReelDict
       <ul className={s.links}>
         {finale.links.map((link) => (
           <li key={link.label}>
-            <a href={link.href} className={s.link} data-magnetic>
+            <a
+              href={link.href}
+              className={s.link}
+              data-magnetic
+              {...(/^https?:|\.pdf$/.test(link.href) && { target: "_blank", rel: "noopener" })}
+            >
               <span className={s.linkLabel}>
                 <span>{link.label}</span>
                 <span aria-hidden>{link.label}</span>
@@ -50,7 +55,7 @@ export default function Contact({ lang, t, finale }: { lang: Locale; t: ReelDict
               {/* Пока адреса не проставлены, показываем прочерк, а не «#»:
                   решётка выглядит как недоделка, прочерк — как «пусто». */}
               <span className={s.linkHref} aria-hidden>
-                {link.href.replace(/^mailto:|^https?:\/\/|^#$/, "") || "—"}
+                {link.href.endsWith(".pdf") ? "PDF" : link.href.replace(/^mailto:|^https?:\/\/(www\.)?|^#$/, "") || "—"}
               </span>
               <i className={s.linkArrow} aria-hidden>
                 ↗
