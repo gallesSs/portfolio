@@ -120,10 +120,10 @@ export const en = {
     stack: {
       title: "Toolkit",
       rows: [
-        ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion", "Node.js", "REST API"],
+        ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion", "REST API"],
         ["Shopify", "Liquid", "Shopify CLI", "Custom themes", "Shopify Apps", "Metafields", "Shopify Plus", "Integrations"],
         ["WordPress", "WooCommerce", "Elementor", "ACF", "Gutenberg", "PHP", "Supabase", "PostgreSQL"],
-        ["Claude", "ChatGPT", "Gemini", "Grok", "Figma", "Git", "Docker", "SEO", "Core Web Vitals", "Vercel", "Accessibility"],
+        ["Claude", "ChatGPT", "Gemini", "Grok", "Figma", "Git", "SEO", "Core Web Vitals", "Vercel", "Accessibility"],
       ],
       manifest:
         "A website isn't a picture. It's a tool your business works with — it has to bring people in, hold them, and keep earning long after the launch. Good looks are the price of entry, not the result.",
@@ -232,19 +232,25 @@ export const en = {
     },
     axis: {
       plate: "Axis",
-      kicker: "New project · coming soon",
-      title: "On the bench right now",
-      stack: "Under wraps — for now",
-      line: "Something new is in the works and it's not ready to show yet. Want to see it first? Write me and I'll send you the link the day it goes live.",
+      kicker: "Website · Next.js",
+      title: "An architecture studio, in motion",
+      stack: "Next.js 16 · React 19 · TypeScript · Motion · Lenis · Swiper",
+      line: "A multi-page site for a modular architecture studio: an animated preloader, scroll-driven animations with smooth scrolling, Swiper galleries and dynamic project pages. Every style written by hand — no UI kit.",
       demo: "",
-      cta: "Show me first",
+      cta: "",
       link: "",
       asks: [
-        { q: "What is it?", a: "Not telling yet. It'll be here soon — write me and you'll be the first to see it." },
-        { q: "When?", a: "Soon. Good things take a little longer than a weekend." },
         {
-          q: "Can I hire you meanwhile?",
-          a: "Of course. Axis doesn't take the whole week — there's room for your project.",
+          q: "What's under the hood?",
+          a: "Next.js 16 on the App Router, React 19 and TypeScript. Animations on Motion, smooth scrolling on Lenis, galleries on Swiper — and styles in CSS Modules, written by hand.",
+        },
+        {
+          q: "Why no UI kit?",
+          a: "A site like this lives on its look. Hand-written styles mean every spacing and every animation is exactly what the design needs — and there's nothing extra to load.",
+        },
+        {
+          q: "Can you build something like this for me?",
+          a: "Yes. A studio, a brand or a product that has to make an impression — send me the idea or a Figma file, and I'll tell you what it would take.",
         },
       ],
     },

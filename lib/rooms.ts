@@ -65,7 +65,7 @@ const GEO = [
     side: "right",
     door: { panel: "#22262e", light: "#9fb4cc", window: 0 },
     demoSrc: "",
-    href: "",
+    href: "https://axios-psi-roan.vercel.app/",
     shot: "",
   },
   {
